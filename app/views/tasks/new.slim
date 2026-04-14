@@ -1,0 +1,10 @@
+.header
+  h1 Tambah Task
+  = link_to 'Kembali', url(:tasks, :index), class: 'btn'
+
+form action=url(:tasks, :create) method="post"
+  = csrf_token_field
+  .form-group
+    label for="title" Judul Task
+    input type="text" id="title" name="title" placeholder="Contoh: Belajar Padrino" autofocus="true"
+  = submit_tag 'Simpan', class: 'btn btn-primary'

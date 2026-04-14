@@ -1,0 +1,35 @@
+.DS_Store
+log/**/*
+tmp/**/*
+vendor/gems/*
+!vendor/gems/cache/
+.sass-cache/*
+db/*.db
+.*.sw*
+
+# Bundler
+.bundle/
+vendor/bundle/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Logs
+*.log
