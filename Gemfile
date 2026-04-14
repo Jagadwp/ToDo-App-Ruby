@@ -43,6 +43,9 @@ group :test do
   gem 'database_cleaner-active_record'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
 end
 
 # Or Padrino Edge

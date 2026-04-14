@@ -5,7 +5,8 @@
 form.search-bar action=url(:tasks, :index) method="get"
   input type="hidden" name="filter" value=@filter
   input type="hidden" name="sort" value=@sort
-  input type="text" name="query" value=@query placeholder="Cari task..." class="search-input"
+  input.search-input type="text" name="query" value=@query placeholder="Search tasks..."
+  button.search-btn type="submit" Search
   - unless @query.empty?
     = link_to 'x', url(:tasks, :index, filter: @filter, sort: @sort), class: 'clear-btn'
 

@@ -13,6 +13,28 @@ require 'factory_bot'
 require 'faker'
 require 'database_cleaner/active_record'
 require 'shoulda/matchers'
+require 'capybara'
+require 'capybara/rspec'
+require 'selenium-webdriver'
+require 'webdrivers'
+
+Capybara.configure do |config|
+  config.app              = Padrino.application
+  config.default_driver   = :rack_test # default tanpa browser
+  config.javascript_driver = :selenium_chrome  # pakai Chrome untuk JS test
+  config.app_host         = 'http://127.0.0.1'
+  config.server_port      = 3001
+end
+
+Capybara.register_driver :selenium_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless')           # jalankan tanpa buka window
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--window-size=1280,800')
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

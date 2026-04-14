@@ -35,14 +35,19 @@ TodoApp::App.controllers :tasks do
 
   # POST /tasks/create — simpan task baru
   post :create do
-    @task = Task.new(title: params[:title])
-
-    if @task.save
-      flash[:success] = 'Task berhasil ditambahkan!'
-      redirect url(:tasks, :index)
+    if params[:title].to_s.strip.empty?
+      flash[:error] = "Title can't be blank"
+      redirect url(:tasks, :new)
     else
-      flash[:error] = @task.errors.full_messages.join(', ')
-      render 'tasks/new'
+      @task = Task.new(title: params[:title].to_s.strip)
+
+      if @task.save
+        flash[:success] = 'Task berhasil ditambahkan!'
+        redirect url(:tasks, :index)
+      else
+        flash[:error] = @task.errors.full_messages.join(', ')
+        redirect url(:tasks, :new)
+      end
     end
   end
 
