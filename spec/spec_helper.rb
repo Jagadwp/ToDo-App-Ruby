@@ -20,15 +20,16 @@ require 'webdrivers'
 
 Capybara.configure do |config|
   config.app              = Padrino.application
-  config.default_driver   = :rack_test # default tanpa browser
-  config.javascript_driver = :selenium_chrome  # pakai Chrome untuk JS test
-  config.app_host         = 'http://127.0.0.1'
+  config.server           = :webrick
+  config.default_driver   = :selenium_chrome
+  config.javascript_driver = :selenium_chrome
+  config.app_host         = 'http://127.0.0.1:3001'
   config.server_port      = 3001
 end
 
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless')           # jalankan tanpa buka window
+  # options.add_argument('--headless')
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--window-size=1280,800')
@@ -40,7 +41,6 @@ RSpec.configure do |config|
   config.include Rack::Test::Methods
   config.include FactoryBot::Syntax::Methods
 
-  # shoulda-matchers setup
   Shoulda::Matchers.configure do |m|
     m.integrate do |with|
       with.test_framework :rspec
@@ -49,19 +49,18 @@ RSpec.configure do |config|
     end
   end
 
-  # database cleaner
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
-  end
-
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning { example.run }
-  end
-
-  # factory bot
-  config.before(:suite) do
     FactoryBot.find_definitions
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
 end
 

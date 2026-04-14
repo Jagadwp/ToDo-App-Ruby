@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Tasks', type: :feature do
+RSpec.describe 'Tasks', type: :feature, driver: :selenium_chrome do
   describe 'index page' do
     it 'shows the page title' do
       visit '/tasks'

@@ -15,7 +15,6 @@ A simple task management web app built with Padrino + Slim + PostgreSQL.
 ## Preview
 <img width="713" height="830" alt="image" src="https://github.com/user-attachments/assets/8ab76942-aef3-4a6a-9305-888f31b59b64" />
 
-
 ## Features
 
 - Create and delete tasks
@@ -31,6 +30,7 @@ A simple task management web app built with Padrino + Slim + PostgreSQL.
 - Ruby 2.7.8
 - PostgreSQL 15
 - Bundler
+- Google Chrome (for feature tests)
 
 ## Setup
 
@@ -70,6 +70,85 @@ bundle exec guard
 
 Debugging uses `byebug` — insert `byebug` at any point you want to inspect, then run the server normally.
 
+## Testing
+
+This project uses RSpec with 95%+ code coverage, including unit tests, controller tests, and browser automation tests via Capybara + Selenium WebDriver.
+
+### Test stack
+
+| Gem | Purpose |
+|---|---|
+| `rspec` + `rspec-padrino` | test framework |
+| `rack-test` | HTTP request simulation |
+| `factory_bot` + `faker` | test data generation |
+| `database_cleaner` | clean database between tests |
+| `shoulda-matchers` | model validation matchers |
+| `capybara` + `selenium-webdriver` | browser automation |
+| `simplecov` | code coverage report |
+
+### Setup test database
+
+```bash
+bundle exec rake db:create RACK_ENV=test
+bundle exec rake db:migrate RACK_ENV=test
+```
+
+### Run all tests
+
+```bash
+bundle exec rspec
+```
+
+### Run by type
+
+```bash
+# unit tests — model validations, scopes, callbacks
+bundle exec rspec spec/models/
+
+# controller tests — HTTP routes, status codes, redirects
+bundle exec rspec spec/controllers/
+
+# feature tests — full browser automation via Selenium
+bundle exec rspec spec/features/
+```
+
+### Run a single file
+
+```bash
+bundle exec rspec spec/models/task_spec.rb
+bundle exec rspec spec/controllers/tasks_spec.rb
+bundle exec rspec spec/features/tasks_spec.rb
+```
+
+### Run a single test by line number
+
+```bash
+bundle exec rspec spec/features/tasks_spec.rb:19
+```
+
+### View coverage report
+
+After running tests, open the generated report:
+
+```bash
+open coverage/index.html
+```
+
+### Test structure
+
+```
+spec/
+├── factories/
+│   └── tasks.rb          # FactoryBot blueprints for test data
+├── models/
+│   └── task_spec.rb      # unit tests — validations, scopes, search
+├── controllers/
+│   └── tasks_spec.rb     # request tests — CRUD routes
+├── features/
+│   └── tasks_spec.rb     # browser tests — full user flow via Selenium
+└── spec_helper.rb        # RSpec + Capybara + DatabaseCleaner config
+```
+
 ## Project Structure
 
 ```
@@ -94,6 +173,7 @@ todo-app/
 │       └── 001_create_tasks.rb   # tasks table migration
 ├── models/
 │   └── task.rb                   # Task model
+├── spec/                         # test suite
 ├── Gemfile
 └── Guardfile
 ```
