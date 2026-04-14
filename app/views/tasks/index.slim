@@ -2,18 +2,24 @@
   h1 Todo App
   = link_to 'Tambah Task', url(:tasks, :new), class: 'btn btn-primary'
 
+form.search-bar action=url(:tasks, :index) method="get"
+  input type="hidden" name="filter" value=@filter
+  input type="hidden" name="sort" value=@sort
+  input type="text" name="query" value=@query placeholder="Cari task..." class="search-input"
+  - unless @query.empty?
+    = link_to 'x', url(:tasks, :index, filter: @filter, sort: @sort), class: 'clear-btn'
+
 .filter-bar
   .filter-group
-    = link_to 'Semua', url(:tasks, :index, filter: 'all', sort: @sort), class: filter_btn_class(@filter, 'all')
-    = link_to 'Pending', url(:tasks, :index, filter: 'pending', sort: @sort), class: filter_btn_class(@filter, 'pending')
-    = link_to 'Selesai', url(:tasks, :index, filter: 'completed', sort: @sort), class: filter_btn_class(@filter, 'completed')
-
+    = link_to 'Semua', url(:tasks, :index, filter: 'all', sort: @sort, query: @query), class: filter_btn_class(@filter, 'all')
+    = link_to 'Pending', url(:tasks, :index, filter: 'pending', sort: @sort, query: @query), class: filter_btn_class(@filter, 'pending')
+    = link_to 'Selesai', url(:tasks, :index, filter: 'completed', sort: @sort, query: @query), class: filter_btn_class(@filter, 'completed')
   .sort-group
     select.sort-select onchange="window.location=this.value"
-      option value=url(:tasks, :index, filter: @filter, sort: 'newest') selected=(@sort == 'newest' ? 'selected' : nil) ↓ Terbaru
-      option value=url(:tasks, :index, filter: @filter, sort: 'oldest') selected=(@sort == 'oldest' ? 'selected' : nil) ↑ Terlama
-      option value=url(:tasks, :index, filter: @filter, sort: 'a_to_z') selected=(@sort == 'a_to_z' ? 'selected' : nil) A → Z
-      option value=url(:tasks, :index, filter: @filter, sort: 'z_to_a') selected=(@sort == 'z_to_a' ? 'selected' : nil) Z → A
+      option value=url(:tasks, :index, filter: @filter, sort: 'newest', query: @query) selected=(@sort == 'newest' ? 'selected' : nil) ↓ Terbaru
+      option value=url(:tasks, :index, filter: @filter, sort: 'oldest', query: @query) selected=(@sort == 'oldest' ? 'selected' : nil) ↑ Terlama
+      option value=url(:tasks, :index, filter: @filter, sort: 'a_to_z', query: @query) selected=(@sort == 'a_to_z' ? 'selected' : nil) A → Z
+      option value=url(:tasks, :index, filter: @filter, sort: 'z_to_a', query: @query) selected=(@sort == 'z_to_a' ? 'selected' : nil) Z → A
 
 .stats
   .stat
@@ -29,7 +35,10 @@
 == progress_bar(completion_percentage(@tasks))
 
 - if @tasks.empty?
-  .empty Belum ada task. Tambah task pertamamu!
+  - if @query.empty?
+    .empty No tasks yet. Add your first task!
+  - else
+    .empty No tasks found for "#{@query}"
 - else
   - @tasks.each do |task|
     div class=task_card_class(task)

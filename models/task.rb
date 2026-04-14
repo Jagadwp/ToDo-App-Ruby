@@ -8,6 +8,7 @@ class Task < ActiveRecord::Base
   scope :completed, -> { where(completed: true) }
   scope :pending,   -> { where(completed: false) }
   scope :recent,    -> { order(created_at: :desc) }
+  scope :search, ->(query) { where('title ILIKE ?', "%#{query}%") }
 
   private
 

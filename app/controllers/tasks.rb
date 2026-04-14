@@ -5,12 +5,15 @@ TodoApp::App.controllers :tasks do
   get :index do
     @filter = params[:filter] || 'all'
     @sort   = params[:sort]   || 'newest'
+    @query  = params[:query].to_s.strip
 
     @tasks = case @filter
              when 'completed' then Task.completed
              when 'pending'   then Task.pending
              else                  Task.all
              end
+
+    @tasks = @tasks.search(@query) unless @query.empty?
 
     @tasks = case @sort
              when 'oldest' then @tasks.order(created_at: :asc)
