@@ -13,6 +13,10 @@ module TodoApp
       register Padrino::Reloader
     end
 
+    configure :test do
+      disable :protect_from_csrf
+    end
+
     get '/' do
       redirect url(:tasks, :index)
     end

@@ -34,6 +34,17 @@ group :development do
   gem 'guard-livereload'
 end
 
+group :test do
+  gem 'rspec'
+  gem 'rspec-padrino'
+  gem 'rack-test'
+  gem 'factory_bot'
+  gem 'faker'
+  gem 'database_cleaner-active_record'
+  gem 'shoulda-matchers'
+  gem 'simplecov', require: false
+end
+
 # Or Padrino Edge
 # gem 'padrino', github: 'padrino/padrino-framework'
 
