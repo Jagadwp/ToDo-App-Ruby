@@ -1,0 +1,16 @@
+.header
+  h1 Categories
+  = link_to 'Back to Tasks', url(:tasks, :index), class: 'btn'
+  = link_to 'Add Category', url(:categories, :new), class: 'btn btn-primary'
+
+- if @categories.empty?
+  .empty No categories yet.
+- else
+  - @categories.each do |cat|
+    .card
+      span.task-title = cat.name
+      span.task-date = "#{cat.tasks.count} tasks"
+      form action=url(:categories, :destroy, id: cat.id) method="post"
+        = csrf_token_field
+        input type="hidden" name="_method" value="delete"
+        button.btn.btn-danger type="submit" Delete

@@ -1,0 +1,10 @@
+.header
+  h1 Add Category
+  = link_to 'Back', url(:categories, :index), class: 'btn'
+
+form action=url(:categories, :create) method="post"
+  = csrf_token_field
+  .form-group
+    label for="name" Category Name
+    input type="text" id="name" name="name" placeholder="e.g. Work, Personal" autofocus="true"
+  = submit_tag 'Save', class: 'btn btn-primary'

@@ -3,9 +3,10 @@
 TodoApp::App.controllers :tasks do
   # GET /tasks — tampilkan semua task
   get :index do
-    @filter = params[:filter] || 'all'
-    @sort   = params[:sort]   || 'newest'
-    @query  = params[:query].to_s.strip
+    @filter     = params[:filter]   || 'all'
+    @sort       = params[:sort]     || 'newest'
+    @query      = params[:query].to_s.strip
+    @category_id = params[:category_id].to_s.strip
 
     @tasks = case @filter
              when 'completed' then Task.completed
@@ -13,7 +14,8 @@ TodoApp::App.controllers :tasks do
              else                  Task.all
              end
 
-    @tasks = @tasks.search(@query) unless @query.empty?
+    @tasks = @tasks.by_category(@category_id) unless @category_id.empty?
+    @tasks = @tasks.search(@query)            unless @query.empty?
 
     @tasks = case @sort
              when 'oldest' then @tasks.order(created_at: :asc)
@@ -22,14 +24,16 @@ TodoApp::App.controllers :tasks do
              else               @tasks.order(created_at: :desc)
              end
 
-    @pending = Task.pending.count
-    @done    = Task.completed.count
+    @pending    = Task.pending.count
+    @done       = Task.completed.count
+    @categories = Category.recent
     render 'tasks/index'
   end
 
   # GET /tasks/new — tampilkan form tambah task
   get :new do
-    @task = Task.new
+    @task       = Task.new
+    @categories = Category.recent
     render 'tasks/new'
   end
 
@@ -39,10 +43,13 @@ TodoApp::App.controllers :tasks do
       flash[:error] = "Title can't be blank"
       redirect url(:tasks, :new)
     else
-      @task = Task.new(title: params[:title].to_s.strip)
+      @task = Task.new(
+        title: params[:title].to_s.strip,
+        category_id: params[:category_id].presence
+      )
 
       if @task.save
-        flash[:success] = 'Task berhasil ditambahkan!'
+        flash[:success] = 'Task added!'
         redirect url(:tasks, :index)
       else
         flash[:error] = @task.errors.full_messages.join(', ')

@@ -13,7 +13,7 @@ A simple task management web app built with Padrino + Slim + PostgreSQL.
 | Ruby | 2.7.8 |
 
 ## Preview
-<img width="670" height="777" alt="image" src="https://github.com/user-attachments/assets/b751812f-cee5-4145-b43c-72a9a4b89031" />
+<img width="681" height="794" alt="image" src="https://github.com/user-attachments/assets/1345feb9-8f45-4dff-88a4-77fc5905f677" />
 
 ## Features
 

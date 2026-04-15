@@ -1,10 +1,16 @@
 .header
-  h1 Tambah Task
-  = link_to 'Kembali', url(:tasks, :index), class: 'btn'
+  h1 Add Task
+  = link_to 'Back', url(:tasks, :index), class: 'btn'
 
 form action=url(:tasks, :create) method="post"
   = csrf_token_field
   .form-group
-    label for="title" Judul Task
-    input type="text" id="title" name="title" placeholder="Contoh: Belajar Padrino" autofocus="true"
-  = submit_tag 'Simpan', class: 'btn btn-primary'
+    label for="title" Title
+    input type="text" id="title" name="title" placeholder="e.g. Learn Padrino" autofocus="true"
+  .form-group
+    label for="category_id" Category
+    select id="category_id" name="category_id"
+      option value="" — No Category —
+      - @categories.each do |cat|
+        option value=cat.id = cat.name
+  = submit_tag 'Save', class: 'btn btn-primary'

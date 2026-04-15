@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 class Task < ActiveRecord::Base
+  belongs_to :category, optional: true
+
   validates :title, presence: true, length: { minimum: 1, maximum: 255 }
 
   before_create :set_default_completed
 
-  scope :completed, -> { where(completed: true) }
-  scope :pending,   -> { where(completed: false) }
-  scope :recent,    -> { order(created_at: :desc) }
-  scope :search, ->(query) { where('title ILIKE ?', "%#{query}%") }
+  scope :completed,        -> { where(completed: true) }
+  scope :pending,          -> { where(completed: false) }
+  scope :recent,           -> { order(created_at: :desc) }
+  scope :search,           ->(query) { where('title ILIKE ?', "%#{query}%") }
+  scope :by_category,      ->(id) { where(category_id: id) }
+  scope :uncategorized,    -> { where(category_id: nil) }
 
   private
 
