@@ -1,8 +1,29 @@
 # frozen_string_literal: true
 
 TodoApp::App.controllers :tasks do
+  # runs for all actions — load categories
   before do
     @categories = Category.recent
+  end
+
+  # runs before :update and :destroy — find task first
+  # if not found, redirect with error before action runs
+  before :update, :destroy do
+    @task = Task.find_by(id: params[:id])
+    unless @task
+      flash[:error] = 'Task not found.'
+      redirect url(:tasks, :index)
+    end
+  end
+
+  # runs before :create — log attempt
+  before :create do
+    logger.debug "Attempting to create task with title: '#{params[:title]}'"
+  end
+
+  # runs before :new and :create — log categories count
+  before :new, :create do
+    logger.debug "Categories available: #{@categories.count}"
   end
 
   after do
@@ -11,9 +32,9 @@ TodoApp::App.controllers :tasks do
 
   # GET /tasks — show list of tasks with filters and sorting
   get :index do
-    @filter     = params[:filter]   || 'all'
-    @sort       = params[:sort]     || 'newest'
-    @query      = params[:query].to_s.strip
+    @filter      = params[:filter]      || 'all'
+    @sort        = params[:sort]        || 'newest'
+    @query       = params[:query].to_s.strip
     @category_id = params[:category_id].to_s.strip
 
     @tasks = case @filter
@@ -32,14 +53,14 @@ TodoApp::App.controllers :tasks do
              else               @tasks.order(created_at: :desc)
              end
 
-    @pending    = Task.pending.count
-    @done       = Task.completed.count
+    @pending = Task.pending.count
+    @done    = Task.completed.count
     render 'tasks/index'
   end
 
   # GET /tasks/new — show form to create new task
   get :new do
-    @task       = Task.new
+    @task = Task.new
     render 'tasks/new'
   end
 
@@ -65,15 +86,15 @@ TodoApp::App.controllers :tasks do
   end
 
   # PATCH /tasks/update/:id — toggle completed
+  # @task already loaded by before filter
   patch :update, with: :id do
-    @task = Task.find(params[:id])
     @task.update(completed: !@task.completed)
     redirect url(:tasks, :index)
   end
 
   # DELETE /tasks/destroy/:id — delete task
+  # @task already loaded by before filter
   delete :destroy, with: :id do
-    @task = Task.find(params[:id])
     @task.destroy
     flash[:success] = 'Task successfully deleted!'
     redirect url(:tasks, :index)
