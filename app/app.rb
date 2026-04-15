@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
+require_relative '../lib/middlewares/request_logger'
+
 module TodoApp
   class App < Padrino::Application
     use ConnectionPoolManagement
+    use Middleware::RequestLogger
     register Padrino::Mailer
     register Padrino::Helpers
     enable :sessions
-
     use Rack::LiveReload if Padrino.env == :development
 
     configure :development do
@@ -66,16 +68,12 @@ module TodoApp
     #   end
     #
 
-    ##
-    # You can manage errors like:
-    #
-    #   error 404 do
-    #     render 'errors/404'
-    #   end
-    #
-    #   error 500 do
-    #     render 'errors/500'
-    #   end
-    #
+    error 404 do
+      render 'errors/not_found'
+    end
+
+    error 500 do
+      render 'errors/server_error'
+    end
   end
 end

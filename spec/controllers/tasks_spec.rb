@@ -33,11 +33,11 @@ RSpec.describe 'Tasks controller', type: :controller do
     end
 
     context 'with search' do
-      let!(:task) { create(:task, title: 'Belajar Ruby') }
+      let!(:task) { create(:task, title: 'Learn Ruby') }
 
       it 'returns matching tasks' do
-        get '/tasks', query: 'Belajar'
-        expect(last_response.body).to include('Belajar Ruby')
+        get '/tasks', query: 'Learn'
+        expect(last_response.body).to include('Learn Ruby')
       end
 
       it 'returns empty for unmatched query' do

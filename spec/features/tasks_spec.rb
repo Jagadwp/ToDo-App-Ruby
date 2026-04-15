@@ -18,18 +18,18 @@ RSpec.describe 'Tasks', type: :feature, driver: :selenium_chrome do
   describe 'add task' do
     it 'can add a new task' do
       visit '/tasks'
-      click_link 'Tambah Task'
+      click_link 'Add Task'
 
-      fill_in 'title', with: 'Belajar Selenium'
-      click_button 'Simpan'
+      fill_in 'title', with: 'Learn Selenium'
+      click_button 'Save'
 
-      expect(page).to have_content('Belajar Selenium')
-      expect(page).to have_content('Task berhasil ditambahkan!')
+      expect(page).to have_content('Learn Selenium')
+      expect(page).to have_content('Task successfully added!')
     end
 
     it 'shows error when title is empty' do
       visit '/tasks/new'
-      click_button 'Simpan'
+      click_button 'Save'
       expect(page).to have_content("Title can't be blank")
     end
   end
@@ -49,20 +49,20 @@ RSpec.describe 'Tasks', type: :feature, driver: :selenium_chrome do
 
     it 'filters completed tasks' do
       visit '/tasks'
-      click_link 'Selesai'
+      click_link 'Completed'
       expect(page).to have_content('Completed task')
       expect(page).not_to have_content('Pending task')
     end
   end
 
   describe 'search tasks' do
-    before { create(:task, title: 'Belajar Ruby') }
+    before { create(:task, title: 'Learn Ruby') }
 
     it 'finds task by title' do
       visit '/tasks'
-      fill_in 'query', with: 'Belajar'
+      fill_in 'query', with: 'Learn'
       click_button 'Search'
-      expect(page).to have_content('Belajar Ruby')
+      expect(page).to have_content('Learn Ruby')
     end
   end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Tasks', type: :feature, driver: :selenium_chrome do
     it 'can delete a task' do
       visit '/tasks'
       expect(page).to have_content('Task to delete')
-      click_button 'Hapus'
+      click_button 'Delete'
       expect(page).not_to have_content('Task to delete')
     end
   end

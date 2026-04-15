@@ -43,14 +43,14 @@ RSpec.describe Task, type: :model do
     end
 
     describe '.search' do
-      let!(:task) { create(:task, title: 'Belajar Ruby') }
+      let!(:task) { create(:task, title: 'Learn Ruby') }
 
       it 'finds task by partial title' do
-        expect(Task.search('Belajar')).to include(task)
+        expect(Task.search('Learn')).to include(task)
       end
 
       it 'is case insensitive' do
-        expect(Task.search('belajar')).to include(task)
+        expect(Task.search('learn')).to include(task)
       end
 
       it 'returns nothing for unmatched query' do

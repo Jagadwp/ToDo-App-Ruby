@@ -5,7 +5,7 @@ module TodoApp
     module TasksHelper
       def status_badge(task)
         if task.completed
-          '<span class="badge badge-done">Selesai</span>'
+          '<span class="badge badge-done">Done</span>'
         else
           '<span class="badge badge-pending">Pending</span>'
         end
@@ -36,7 +36,7 @@ module TodoApp
         <<~HTML
           <div class="progress-wrap">
             <div class="progress-bar" style="width: #{percentage}%"></div>
-            <span class="progress-label">#{percentage}% selesai</span>
+            <span class="progress-label">#{percentage}% complete</span>
           </div>
         HTML
       end

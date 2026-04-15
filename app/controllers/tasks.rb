@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 
 TodoApp::App.controllers :tasks do
-  # GET /tasks — tampilkan semua task
+  before do
+    @categories = Category.recent
+  end
+
+  after do
+    logger.debug "Action completed: #{request.path_info} at #{Time.now.strftime('%H:%M:%S')}"
+  end
+
+  # GET /tasks — show list of tasks with filters and sorting
   get :index do
     @filter     = params[:filter]   || 'all'
     @sort       = params[:sort]     || 'newest'
@@ -26,18 +34,16 @@ TodoApp::App.controllers :tasks do
 
     @pending    = Task.pending.count
     @done       = Task.completed.count
-    @categories = Category.recent
     render 'tasks/index'
   end
 
-  # GET /tasks/new — tampilkan form tambah task
+  # GET /tasks/new — show form to create new task
   get :new do
     @task       = Task.new
-    @categories = Category.recent
     render 'tasks/new'
   end
 
-  # POST /tasks/create — simpan task baru
+  # POST /tasks/create — create new task
   post :create do
     if params[:title].to_s.strip.empty?
       flash[:error] = "Title can't be blank"
@@ -49,7 +55,7 @@ TodoApp::App.controllers :tasks do
       )
 
       if @task.save
-        flash[:success] = 'Task added!'
+        flash[:success] = 'Task successfully added!'
         redirect url(:tasks, :index)
       else
         flash[:error] = @task.errors.full_messages.join(', ')
@@ -65,11 +71,11 @@ TodoApp::App.controllers :tasks do
     redirect url(:tasks, :index)
   end
 
-  # DELETE /tasks/destroy/:id — hapus task
+  # DELETE /tasks/destroy/:id — delete task
   delete :destroy, with: :id do
     @task = Task.find(params[:id])
     @task.destroy
-    flash[:success] = 'Task berhasil dihapus!'
+    flash[:success] = 'Task successfully deleted!'
     redirect url(:tasks, :index)
   end
 end
